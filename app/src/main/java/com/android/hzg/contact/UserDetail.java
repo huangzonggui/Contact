@@ -255,23 +255,25 @@ public class UserDetail extends Activity implements ViewFactory {
         et_email.setTextColor(Color.WHITE);
         et_remark.setTextColor(Color.WHITE);
 
-    }/**
+    }
+
+    /**
      * 装载头像
      */
     public void loadImage() {
-        if(imageChooseView == null) {
+        if (imageChooseView == null) {
             LayoutInflater li = LayoutInflater.from(UserDetail.this);
             imageChooseView = li.inflate(R.layout.imageswitch, null);
-            gallery = (Gallery)imageChooseView.findViewById(R.id.gallery);
+            gallery = (Gallery) imageChooseView.findViewById(R.id.gallery);
             gallery.setAdapter(new ImageAdapter(this));
-            gallery.setSelection(images.length/2);
-            imageSwitcher = (ImageSwitcher)imageChooseView.findViewById(R.id.imageswitch);
+            gallery.setSelection(images.length / 2);
+            imageSwitcher = (ImageSwitcher) imageChooseView.findViewById(R.id.imageswitch);
             imageSwitcher.setFactory(this);
             gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    currentImagePosition = position % images.length;
-                    imageSwitcher.setImageResource(images[position % images.length]);
+                    currentImagePosition = position % images.length;//当前的头像位置为选中的位置
+                    imageSwitcher.setImageResource(images[position % images.length]);//为imageSwitcher设置图像
                 }
 
                 @Override
@@ -282,8 +284,9 @@ public class UserDetail extends Activity implements ViewFactory {
         }
 
     }
+
     public void initImageChooseDialog() {
-        if(imageChooseDialog == null) {
+        if (imageChooseDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("请选择图像")
                     .setView(imageChooseView).setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -291,7 +294,7 @@ public class UserDetail extends Activity implements ViewFactory {
                 public void onClick(DialogInterface dialog, int which) {
                     imageChanged = true;
                     previousImagePosition = currentImagePosition;
-                    imageButton.setImageResource(images[currentImagePosition%images.length]);
+                    imageButton.setImageResource(images[currentImagePosition % images.length]);
                 }
             })
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -317,7 +320,7 @@ public class UserDetail extends Activity implements ViewFactory {
         ImageView view = new ImageView(this);
         view.setBackgroundColor(0xff00000);
         view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        view.setLayoutParams(new ImageSwitcher.LayoutParams(90,90));
+        view.setLayoutParams(new ImageSwitcher.LayoutParams(90, 90));
         return view;
     }
 

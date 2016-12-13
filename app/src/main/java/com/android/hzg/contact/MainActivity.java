@@ -167,10 +167,6 @@ public class MainActivity extends Activity {
                     //0：添加 1：搜索 2：删除 3：菜单 4：退出
                     switch (position) {
                         case 0: {
-                            //清除删除的标记id
-//                            if (deleteId != null && deleteId.size() != 0) {
-//                                deleteId.clear();
-//                            }
                             //置搜索框不可见
                             if (searchLinearLayout != null && searchLinearLayout.getVisibility() == View.VISIBLE) {
                                 searchLinearLayout.setVisibility(View.GONE);

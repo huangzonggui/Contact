@@ -223,9 +223,9 @@ public class DBHelper {
 //            String SDPATH = Environment.getExternalStorageState() + "/";//写错
 //            String SDPATH = Environment.getExternalStorageDirectory() + "/";
             String path = context.getFilesDir() + "/";
-            File fileParentPath = new File(path + "zpContactData/");
+            File fileParentPath = new File(path + "hzgContactBackup/");
             fileParentPath.mkdirs();//创建文件夹
-            File file = new File(path + "zpContactData/" + fileName);
+            File file = new File(path + "hzgContactBackup/" + fileName);
 
             file.createNewFile();
             Log.i("hzg", "the file path = " + file.getAbsolutePath().toString());
@@ -241,12 +241,18 @@ public class DBHelper {
     public boolean findFile(String fileName) {
 //        String SDPATH = Environment.getExternalStorageDirectory() + "/";
         String path = context.getFilesDir() + "/";
+//        Log.i("hzg", "Environment.getDataDirectory():" + Environment.getDataDirectory().toString());
+//        Log.i("hzg", "Environment.getDownloadCacheDirectory():" + Environment.getDownloadCacheDirectory().toString());//下载缓存内容目录。
+//        Log.i("hzg", "Environment.getExternalStorageDirectory():" + Environment.getExternalStorageDirectory().toString());//主要的外部存储目录。
+//        Log.i("hzg", "Environment.getExternalStorageDirectory():" + Environment.getExternalStorageDirectory().toString());//主要的外部存储目录。
+//        Log.i("hzg", "Environment.getRootDirectory():" + Environment.getRootDirectory().toString());//得到Android的根目录。
+//        Log.i("hzg", "context.getExternalCacheDir():" + context.getExternalCacheDir().toString());
         File file;
         //无论你写的文件有没有后缀都会帮你加上后缀.bk
         if (fileName.endsWith(".bk")) {
-            file = new File(path + "zpContactData/" + fileName);
+            file = new File(path + "hzgContactBackup/" + fileName);
         } else {
-            file = new File(path + "zpContactData/" + fileName + ".bk");
+            file = new File(path + "hzgContactBackup/" + fileName + ".bk");
         }
         if (file.exists()) {
             return true;
@@ -262,9 +268,9 @@ public class DBHelper {
             String path = context.getFilesDir() + "/";
             File file;
             if (fileName.endsWith(".bk")) {
-                file = new File(path + "zpContactData/" + fileName);
+                file = new File(path + "hzgContactBackup/" + fileName);
             } else {
-                file = new File(path + "zpContactData/" + fileName + ".bk");
+                file = new File(path + "hzgContactBackup/" + fileName + ".bk");
             }
 
             BufferedReader br = new BufferedReader(new FileReader(file));

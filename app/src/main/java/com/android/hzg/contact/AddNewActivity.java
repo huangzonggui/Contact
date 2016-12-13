@@ -104,7 +104,7 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
                 //打开数据库
                 helper.openDataBase();
                 //把user存储到数据库在里
-                long result =  helper.insert(user);
+                long result = helper.insert(user);
 
                 //判断插入是否成功
                 if (result == -1) {
@@ -160,13 +160,16 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
             gallery.setSelection(images.length / 2);//默认情况下定义到中间
             imageSwitcher = (ImageSwitcher) imageChooseView.findViewById(R.id.imageswitch);
             imageSwitcher.setFactory(this);//要实现makeView方法
-            gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //当前的头像位置为选中的位置
-                    currentImagePosition = position;
-                    //为imageSwitcher设置图像
-                    imageSwitcher.setImageResource(images[position % images.length]);
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    currentImagePosition = position % images.length;//当前的头像位置为选中的位置
+                    imageSwitcher.setImageResource(images[position % images.length]);//为imageSwitcher设置图像
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
                 }
 
             });
@@ -176,16 +179,19 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
     public void initImageChooseDialog() {
         if (imageChooseDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("请选择图像").setView(imageChooseView).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            builder.setTitle("请选择图像")
+                    .setView(imageChooseView)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     imageChanged = true;
+                    previousImagePosition = currentImagePosition;
                     imageButton.setImageResource(images[currentImagePosition % images.length]);
                 }
             }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    currentImagePosition = previousImagePosition;
                 }
             });
             imageChooseDialog = builder.create();
@@ -236,6 +242,7 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
             return iv;
         }
     }
+
     /**
      * 当退出的时候，回收资源
      */
