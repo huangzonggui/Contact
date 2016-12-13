@@ -27,13 +27,13 @@
     </GridView>
 
     <LinearLayout
-        android:id="@+id/ll_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/gv_buttom_menu"
-        android:visibility="gone">
+            android:id="@+id/ll_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@+id/gv_buttom_menu"
+            android:visibility="gone" android:background="#3a3b3a">
     <EditText
             android:id="@+id/et_search"
             android:layout_width="match_parent"

@@ -24,8 +24,8 @@
 
 				<ImageButton
 				android:id="@+id/image_button"
-				android:layout_width="60px"
-				android:layout_height="60px"
+				android:layout_width="106px"
+				android:layout_height="106px"
 				android:src="@drawable/icon"
 				android:scaleType="centerCrop"
 				>

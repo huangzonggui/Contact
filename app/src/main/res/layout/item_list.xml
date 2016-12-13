@@ -1,57 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+
+<RelativeLayout
+        android:id="@+id/widget33"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
     <ImageView
             android:id="@+id/user_image"
-            android:src="@drawable/icon"
-            android:layout_width="50px"
-            android:layout_height="88px"
+            android:layout_width="106px"
+            android:layout_height="106px"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"/>
-
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:layout_toRightOf="@+id/user_image"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
     >
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="44px"
-                      android:orientation="horizontal">
+    </ImageView>
+
+
+    <LinearLayout
+            android:id="@+id/linerlayout"
+            android:layout_width="fill_parent"
+            android:layout_height="106px"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/user_image"
+            android:layout_alignParentRight="true"
+    >
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50px"
+                android:orientation="horizontal"
+        >
+
             <TextView
-                    android:layout_weight="1"
-                    android:text="姓名："
-                    android:textSize="17sp"
+                    android:id="@+id/tv_showname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="top"/>
+                    android:layout_weight="1"
+                    android:textSize="17sp"
+                    android:gravity="top"
+                    android:text="姓名:"
+            />
+
             <TextView
                     android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="7"
                     android:textSize="17sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"/>
+                    android:gravity="left"
+            />
+
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="44px"
-                      android:orientation="horizontal">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50px"
+                android:orientation="horizontal"
+        >
+
             <TextView
-                    android:layout_weight="1"
-                    android:text="电话："
-                    android:textSize="17sp"
+                    android:id="@+id/tv_showmobilephone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"/>
+                    android:layout_weight="1"
+                    android:textSize="17sp"
+                    android:gravity="left"
+                    android:text="手机:"
+            />
             <TextView
                     android:id="@+id/tv_mobilephone"
-                    android:layout_weight="7"
-                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"/>
+                    android:layout_weight="7"
+                    android:textSize="20sp"
+                    android:gravity="left"
+            />
         </LinearLayout>
     </LinearLayout>
 
@@ -62,5 +85,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:visibility="gone"
-            android:src="@drawable/checkmark"/>
+            android:src="@drawable/checkmark"
+    >
+    </ImageView>
 </RelativeLayout>

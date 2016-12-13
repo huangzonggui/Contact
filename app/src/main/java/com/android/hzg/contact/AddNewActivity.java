@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -59,6 +60,13 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new);
+        Intent intent = getIntent();
+        //为空的话就是普通用户
+        if (intent.getExtras() != null && intent.getExtras().getInt("privacy") == 1) {
+            privacy = 1;
+        } else {
+            privacy = 0;
+        }
 
         init();
         btn_save.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +98,7 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
                     user.imageId = images[previousImagePosition % images.length];
                 }
                 //用户类型
-                //user.privacy = privacy;
+                user.privacy = privacy;
                 //创建数据库帮助类
                 DBHelper helper = new DBHelper(AddNewActivity.this);
                 //打开数据库
@@ -227,5 +235,28 @@ public class AddNewActivity extends Activity implements ViewSwitcher.ViewFactory
             iv.setPadding(15, 10, 15, 10);
             return iv;
         }
+    }
+    /**
+     * 当退出的时候，回收资源
+     */
+    @Override
+    protected void onDestroy() {
+        if (imageSwitcher != null) {
+            imageSwitcher = null;
+        }
+        if (gallery != null) {
+            gallery = null;
+        }
+        if (imageChooseDialog != null) {
+            imageChooseDialog = null;
+        }
+        if (imageChooseView != null) {
+            imageChooseView = null;
+        }
+        if (imageButton != null) {
+            imageButton = null;
+        }
+
+        super.onDestroy();
     }
 }

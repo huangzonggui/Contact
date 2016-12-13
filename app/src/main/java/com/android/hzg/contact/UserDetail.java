@@ -2,22 +2,24 @@ package com.android.hzg.contact;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.android.hzg.contact.db.DBHelper;
+import android.widget.ViewSwitcher.ViewFactory;
 import com.android.hzg.contact.entity.User;
-
-import java.util.HashMap;
 
 /**
  * Created by hzg on 2016/12/11.
  */
-public class UserDetail extends Activity {
+public class UserDetail extends Activity implements ViewFactory {
 
     EditText et_name;
     EditText et_mobilePhone;
@@ -59,6 +61,10 @@ public class UserDetail extends Activity {
             , R.drawable.image22, R.drawable.image23, R.drawable.image24
             , R.drawable.image25, R.drawable.image26, R.drawable.image27
             , R.drawable.image28, R.drawable.image29, R.drawable.image30};
+    View imageChooseView;
+    int currentImagePosition;
+    int previousImagePosition;
+    boolean imageChanged;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +125,15 @@ public class UserDetail extends Activity {
             }
         });
 
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadImage();//加载imageChooseView，只加载一次
+                initImageChooseDialog();//加载imageChooseDialog，只加载一次
+                imageChooseDialog.show();
+            }
+        });
+
     }
 
     //修改数据:获得最新数据，创建DBHelper对象，更新数据库
@@ -134,6 +149,9 @@ public class UserDetail extends Activity {
         user.position = et_position.getText().toString();
         user.remark = et_remark.getText().toString();
         user.zipCode = et_zipCode.getText().toString();
+        if (imageChanged) {
+            user.imageId = images[currentImagePosition % images.length];
+        }
         DBHelper helper = new DBHelper(this);
         helper.openDataBase();
         helper.modify(user);
@@ -237,12 +255,106 @@ public class UserDetail extends Activity {
         et_email.setTextColor(Color.WHITE);
         et_remark.setTextColor(Color.WHITE);
 
+    }/**
+     * 装载头像
+     */
+    public void loadImage() {
+        if(imageChooseView == null) {
+            LayoutInflater li = LayoutInflater.from(UserDetail.this);
+            imageChooseView = li.inflate(R.layout.imageswitch, null);
+            gallery = (Gallery)imageChooseView.findViewById(R.id.gallery);
+            gallery.setAdapter(new ImageAdapter(this));
+            gallery.setSelection(images.length/2);
+            imageSwitcher = (ImageSwitcher)imageChooseView.findViewById(R.id.imageswitch);
+            imageSwitcher.setFactory(this);
+            gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    currentImagePosition = position % images.length;
+                    imageSwitcher.setImageResource(images[position % images.length]);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+
+    }
+    public void initImageChooseDialog() {
+        if(imageChooseDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("请选择图像")
+                    .setView(imageChooseView).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    imageChanged = true;
+                    previousImagePosition = currentImagePosition;
+                    imageButton.setImageResource(images[currentImagePosition%images.length]);
+                }
+            })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            currentImagePosition = previousImagePosition;
+
+                        }
+                    });
+            imageChooseDialog = builder.create();
+        }
     }
 
     public void delete() {
         DBHelper helper = new DBHelper(this);
         helper.openDataBase();
         helper.delete(user._id);
+    }
+
+    @Override
+    public View makeView() {
+        ImageView view = new ImageView(this);
+        view.setBackgroundColor(0xff00000);
+        view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        view.setLayoutParams(new ImageSwitcher.LayoutParams(90,90));
+        return view;
+    }
+
+    //自定义ViewPager的适配器
+    class ImageAdapter extends BaseAdapter {
+
+        private Context context;
+
+        public ImageAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        //gallery从这个方法中拿到image
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView iv = new ImageView(context);
+            iv.setImageResource(images[position % images.length]);
+            iv.setAdjustViewBounds(true);
+            iv.setLayoutParams(new Gallery.LayoutParams(80, 80));
+            iv.setPadding(15, 10, 15, 10);
+            return iv;
+        }
     }
 
 

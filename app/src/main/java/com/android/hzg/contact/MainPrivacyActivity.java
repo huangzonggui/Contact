@@ -18,7 +18,7 @@ import com.android.hzg.contact.entity.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends Activity {
+public class MainPrivacyActivity extends Activity {
     ArrayList list;//装着listView要显示的数据(map),这个数据是通过数据库拿来的
     SimpleAdapter adapter;//拥有所有数据的Adapter（这个是listView的适配器，注意区分）
     GridView bottomMenuGrid;//屏幕下方的工具栏
@@ -40,10 +40,10 @@ public class MainActivity extends Activity {
     String[] bottom_menu_itemName = {"增加", "查找", "删除", "菜单", "退出",};
     int[] bottom_menu_itemImages = {R.drawable.menu_new_user, R.drawable.menu_search, R.drawable.menu_delete, R.drawable.menu_restore, R.drawable.menu_fresh, R.drawable.menu_return};
 
-    boolean privacy = false;//表示非私密。这里都是非私密，没有改变这个值
+    boolean privacy = true;
 
     //菜单的名字
-    String[] main_menu_itemName = {"显示所有", "删除所有", "备份数据", "还原数据", "私密通讯录", "后退"};
+    String[] main_menu_itemName = {"显示所有", "删除所有", "备份数据", "还原数据", "退出私密所", "后退"};
     //主菜单的图片
     int[] main_menu_itemSource = {
             R.drawable.showall,
@@ -54,13 +54,13 @@ public class MainActivity extends Activity {
             R.drawable.menu_return};
 
     String fileName;
-    private View loginView;//登录视图
-    private AlertDialog loginDialog;//登录的布局
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("个人隐私通讯录");
+        Toast.makeText(this, "成功进入个人隐私通讯录", Toast.LENGTH_LONG).show();
 
         mainLinearLayout = (LinearLayout) findViewById(R.id.main_ll);
         helper = new DBHelper(this);
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap userMap = (HashMap) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(MainActivity.this, UserDetail.class);
+                Intent intent = new Intent(MainPrivacyActivity.this, UserDetail.class);
                 User user = new User();
                 user._id = Integer.parseInt(String.valueOf(userMap.get("_id")));
                 user.address = String.valueOf(userMap.get("address"));
@@ -126,13 +126,9 @@ public class MainActivity extends Activity {
                     markedView.setVisibility(View.VISIBLE);
                     deleteId.add(_id);
                 }
-
                 return true;
             }
         });
-        //为list添加item选择器
-//        Drawable dbDrawable = getResources().getDrawable(R.drawable.list_bg);
-//        lv_user.setSelector(dbDrawable);//点击item的时候有个效果
     }
 
     //这个方法用来捕捉手机键盘被按下的事件。
@@ -167,16 +163,13 @@ public class MainActivity extends Activity {
                     //0：添加 1：搜索 2：删除 3：菜单 4：退出
                     switch (position) {
                         case 0: {
-                            //清除删除的标记id
-//                            if (deleteId != null && deleteId.size() != 0) {
-//                                deleteId.clear();
-//                            }
                             //置搜索框不可见
                             if (searchLinearLayout != null && searchLinearLayout.getVisibility() == View.VISIBLE) {
                                 searchLinearLayout.setVisibility(View.GONE);
                             }
 
-                            Intent intent = new Intent(MainActivity.this, AddNewActivity.class);
+                            Intent intent = new Intent(MainPrivacyActivity.this, AddNewActivity.class);
+                            intent.putExtra("privacy", 1);
                             startActivityForResult(intent, 3);//3 添加
                             break;
                         }
@@ -203,9 +196,9 @@ public class MainActivity extends Activity {
                                 searchLinearLayout.setVisibility(View.GONE);
                             }
                             if (deleteId == null || deleteId.size() == 0) {
-                                Toast.makeText(MainActivity.this, "没有标记任何记录\n长按一条记录即可标记", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainPrivacyActivity.this, "没有标记任何记录\n长按一条记录即可标记", Toast.LENGTH_SHORT).show();
                             } else {
-                                new AlertDialog.Builder(MainActivity.this)
+                                new AlertDialog.Builder(MainPrivacyActivity.this)
                                         .setTitle("确定要删除标记的" + deleteId.size() + "个记录吗？")
                                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                             @Override
@@ -220,7 +213,7 @@ public class MainActivity extends Activity {
                                                 //重置视图
                                                 list = helper.getAllUser(privacy);
                                                 adapter = new SimpleAdapter(
-                                                        MainActivity.this, list,
+                                                        MainPrivacyActivity.this, list,
                                                         R.layout.item_list,
                                                         new String[]{"imageid", "name", "mobilephone"},
                                                         new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
@@ -273,7 +266,7 @@ public class MainActivity extends Activity {
                         case 0: {
                             list = helper.getAllUser(privacy);
                             adapter = new SimpleAdapter(
-                                    MainActivity.this
+                                    MainPrivacyActivity.this
                                     , list
                                     , R.layout.item_list
                                     , new String[]{"imageid", "name", "mobilephone"}
@@ -283,7 +276,7 @@ public class MainActivity extends Activity {
                             break;
                         }
                         case 1: {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainPrivacyActivity.this);
                             confirmDialog = builder.create();
                             builder.setTitle("是否删除所有？");
                             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -292,7 +285,7 @@ public class MainActivity extends Activity {
                                     helper.deleteAll();
                                     list = helper.getAllUser(privacy);
                                     adapter = new SimpleAdapter(
-                                            MainActivity.this
+                                            MainPrivacyActivity.this
                                             , list
                                             , R.layout.item_list
                                             , new String[]{"imageid", "name", "mobilephone"}
@@ -312,14 +305,14 @@ public class MainActivity extends Activity {
                         }
                         case 2: {
                             mainMenuDialog.dismiss();
-                            new AlertDialog.Builder(MainActivity.this)
+                            new AlertDialog.Builder(MainPrivacyActivity.this)
                                     .setTitle("是否需要备份记录到sd卡？")
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                            LayoutInflater li = LayoutInflater.from(MainPrivacyActivity.this);
                                             View backup_view = li.inflate(R.layout.backup_progress, null);
-                                            progressDialog = new AlertDialog.Builder(MainActivity.this)
+                                            progressDialog = new AlertDialog.Builder(MainPrivacyActivity.this)
                                                     .setTitle("备份正在进行中...")
                                                     .setView(backup_view)
                                                     .create();
@@ -329,7 +322,7 @@ public class MainActivity extends Activity {
                                             Button btn_backup_ok = (Button) backup_view.findViewById(R.id.btn_backup_ok);
                                             bar.setMax(list.size());
                                             for (int i = 0; i <= list.size(); i++) {
-                                                bar.setProgress(i);//设置进度条
+                                                bar.setProgress(i);
                                             }
                                             progressDialog.setTitle("备份完成！一共 " + list.size() + " 条记录");
                                             btn_backup_ok.setVisibility(View.VISIBLE);
@@ -347,30 +340,30 @@ public class MainActivity extends Activity {
                             break;
                         }
                         case 3: {
-                            LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                            LayoutInflater li = LayoutInflater.from(MainPrivacyActivity.this);
                             final View enterFileNameView = li.inflate(R.layout.enter_filename, null);
-                            enterFileNameDialog = new AlertDialog.Builder(MainActivity.this)
+                            enterFileNameDialog = new AlertDialog.Builder(MainPrivacyActivity.this)
                                     .setView(enterFileNameView).setNegativeButton("取消", null)
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             fileName = et_enter_file_name.getText().toString();
                                             if (helper.findFile(fileName)) {
-                                                new AlertDialog.Builder(MainActivity.this).setTitle("请选择方式")
+                                                new AlertDialog.Builder(MainPrivacyActivity.this).setTitle("请选择方式")
                                                         .setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 helper.deleteAll();//覆盖就要删除再添加
                                                                 helper.restoreData(fileName);
                                                                 list = helper.getAllUser(privacy);
-                                                                adapter = new SimpleAdapter(MainActivity.this,
+                                                                adapter = new SimpleAdapter(MainPrivacyActivity.this,
                                                                         list,
                                                                         R.layout.item_list,
                                                                         new String[]{"imageid", "name", "mobilephone"},
                                                                         new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
-                                                                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                                                LayoutInflater li = LayoutInflater.from(MainPrivacyActivity.this);
                                                                 View backup_view = li.inflate(R.layout.backup_progress, null);
-                                                                progressDialog = new AlertDialog.Builder(MainActivity.this).setTitle("正在还原数据")
+                                                                progressDialog = new AlertDialog.Builder(MainPrivacyActivity.this).setTitle("正在还原数据")
                                                                         .setView(backup_view).create();
                                                                 progressDialog.show();
                                                                 ProgressBar bar = (ProgressBar) backup_view.findViewById(R.id.pb_backup);
@@ -401,14 +394,14 @@ public class MainActivity extends Activity {
                                                                 int preNum = list.size();
                                                                 helper.restoreData(fileName);
                                                                 list = helper.getAllUser(privacy);
-                                                                adapter = new SimpleAdapter(MainActivity.this,
+                                                                adapter = new SimpleAdapter(MainPrivacyActivity.this,
                                                                         list,
                                                                         R.layout.item_list,
                                                                         new String[]{"imageid", "name", "mobilephone"},
                                                                         new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
-                                                                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                                                LayoutInflater li = LayoutInflater.from(MainPrivacyActivity.this);
                                                                 View backup_view = li.inflate(R.layout.backup_progress, null);
-                                                                progressDialog = new AlertDialog.Builder(MainActivity.this).setTitle("正在还原数据")
+                                                                progressDialog = new AlertDialog.Builder(MainPrivacyActivity.this).setTitle("正在还原数据")
                                                                         .setView(backup_view).create();
                                                                 progressDialog.show();
                                                                 ProgressBar bar = (ProgressBar) backup_view.findViewById(R.id.pb_backup);
@@ -438,7 +431,7 @@ public class MainActivity extends Activity {
                                     })
                                     .create();
                             et_enter_file_name = (EditText) enterFileNameView.findViewById(R.id.et_enter_file_name);
-                            et_enter_file_name.setText("comm_data");
+                            et_enter_file_name.setText("priv_data");
                             et_enter_file_name.requestFocus();
                             et_enter_file_name.selectAll();
                             enterFileNameDialog.show();
@@ -446,55 +439,7 @@ public class MainActivity extends Activity {
                             break;
                         }
                         case 4: {
-                            mainMenuDialog.dismiss();
-                            new AlertDialog.Builder(MainActivity.this).setTitle("进入隐私通讯录?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //新建一个activity出来
-                                    LayoutInflater li = LayoutInflater.from(MainActivity.this);
-                                    loginView = li.inflate(R.layout.login, null);
-
-                                    Button btn_login_ok = (Button) loginView.findViewById(R.id.btn_login_ok);
-                                    Button btn_login_cancel = (Button) loginView.findViewById(R.id.btn_login_cancel);
-                                    final EditText et_account = (EditText) loginView.findViewById(R.id.et_account);
-                                    final EditText et_password = (EditText) loginView.findViewById(R.id.et_password);
-                                    btn_login_ok.setOnClickListener(new View.OnClickListener() {
-
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (et_account.getText().toString().equals("admin") && et_password.getText().toString().equals("admin")) {
-                                                et_account.setText("");
-                                                et_password.setText("");
-                                                loginDialog.dismiss();
-                                                Intent intent = new Intent(MainActivity.this, MainPrivacyActivity.class);
-                                                startActivity(intent);
-
-                                            } else {
-                                                Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-
-                                    });
-                                    btn_login_cancel.setOnClickListener(new View.OnClickListener() {
-
-                                        @Override
-                                        public void onClick(View v) {
-                                            loginDialog.dismiss();
-                                        }
-
-                                    });
-
-                                    if (loginDialog == null) {
-                                        loginDialog = new AlertDialog.Builder(MainActivity.this).setView(loginView).create();
-                                    }
-                                    loginDialog.show();
-
-
-                                }
-                            })
-                                    .setNegativeButton("取消", null)
-                                    .create()
-                                    .show();
+                            finish();
                             break;
                         }
                         case 5: {
@@ -519,8 +464,10 @@ public class MainActivity extends Activity {
 //                    if (condition.equals("")) {
 //                        lv_user.setAdapter(adapter);//为了当没有填查询条件的时候，ListView中就显示所有信息,但是在下面的查询方法中的查询语句中的where 1=1已经带有这个功能了，在这里没必要
 //                    }
-                    list = helper.getUserBySearch(condition, privacy);
-                    SimpleAdapter searchAdapter = new SimpleAdapter(MainActivity.this, list, R.layout.item_list, new String[]{"imageid", "name", "mobilephone"}, new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
+//                    helper = new DBHelper(MainActivity.this);
+//                    helper.openDataBase();
+                    list = helper.getUserBySearch(condition,privacy);
+                    SimpleAdapter searchAdapter = new SimpleAdapter(MainPrivacyActivity.this, list, R.layout.item_list, new String[]{"imageid", "name", "mobilephone"}, new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
                     lv_user.setAdapter(searchAdapter);//将查到整合后的用户信息展示出来
                     if (deleteId != null) {
                         deleteId.clear();
@@ -563,6 +510,8 @@ public class MainActivity extends Activity {
         //当resultCode==3时代表添加了一个用户返回，当resultCode==4的时候代表修改了用户，或者删除了用户，其他条件代表数据没有变化，通过resultCode判断是否需要刷新
         if (resultCode == 3 || resultCode == 4) {
             //重新刷新数据
+//            helper = new DBHelper(this);
+//            helper.openDataBase();//？源代码没有这一句
             list = helper.getAllUser(privacy);
             adapter = new SimpleAdapter(this, list, R.layout.item_list, new String[]{"imageid", "name", "mobilephone"}, new int[]{R.id.user_image, R.id.tv_name, R.id.tv_mobilephone});
         }
@@ -598,10 +547,7 @@ public class MainActivity extends Activity {
         if (lv_user != null) {
             lv_user = null;
         }
-        if (DBHelper.dbInstance != null) {
-            DBHelper.dbInstance.close();
-            DBHelper.dbInstance = null;
-        }
+        Toast.makeText(this, "退出秘密仓库", Toast.LENGTH_LONG).show();
         super.onDestroy();
     }
 }
