@@ -221,8 +221,8 @@ public class DBHelper {
 
         try {
 //            String SDPATH = Environment.getExternalStorageState() + "/";//写错
-//            String SDPATH = Environment.getExternalStorageDirectory() + "/";
-            String path = context.getFilesDir() + "/";
+            String path = Environment.getExternalStorageDirectory() + "/";
+//            String path = context.getFilesDir() + "/";
             File fileParentPath = new File(path + "hzgContactBackup/");
             fileParentPath.mkdirs();//创建文件夹
             File file = new File(path + "hzgContactBackup/" + fileName);
@@ -239,8 +239,8 @@ public class DBHelper {
 
     //判断是否存在这个文件
     public boolean findFile(String fileName) {
-//        String SDPATH = Environment.getExternalStorageDirectory() + "/";
-        String path = context.getFilesDir() + "/";
+        String path = Environment.getExternalStorageDirectory() + "/";
+//        String path = context.getFilesDir() + "/";
 //        Log.i("hzg", "Environment.getDataDirectory():" + Environment.getDataDirectory().toString());
 //        Log.i("hzg", "Environment.getDownloadCacheDirectory():" + Environment.getDownloadCacheDirectory().toString());//下载缓存内容目录。
 //        Log.i("hzg", "Environment.getExternalStorageDirectory():" + Environment.getExternalStorageDirectory().toString());//主要的外部存储目录。
@@ -264,8 +264,8 @@ public class DBHelper {
     //通过记录着sql语句的文件来插入数据
     public void restoreData(String fileName) {
         try {
-//            String SDPATH = Environment.getExternalStorageDirectory() + "/";
-            String path = context.getFilesDir() + "/";
+            String path = Environment.getExternalStorageDirectory() + "/";
+//            String path = context.getFilesDir() + "/";
             File file;
             if (fileName.endsWith(".bk")) {
                 file = new File(path + "hzgContactBackup/" + fileName);
